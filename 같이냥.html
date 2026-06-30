@@ -394,7 +394,7 @@ function enter(){
     if(!m||m.date!==today) return{nick:myNick,score:0,date:today};
     return{...m,nick:myNick};
   });
-  myMemberRef.onDisconnect().update({online:false});
+  myMemberRef.onDisconnect().remove();
 
   const presRef=db.ref("rooms/"+roomId+"/presence/"+mySessionId);
   presRef.set({nick:myNick,ts:Date.now()});
