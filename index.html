@@ -135,17 +135,16 @@ html,body{min-height:100%;font-family:'Apple SD Gothic Neo',-apple-system,BlinkM
 #mailbox-panel{
   display:none;position:fixed;inset:0;
   background:rgba(61,43,31,.45);backdrop-filter:blur(6px);
-  align-items:flex-end;justify-content:center;z-index:300;
+  align-items:center;justify-content:center;z-index:300;
 }
 #mailbox-panel.open{display:flex}
 .mailbox-sheet{
-  background:#fff;border-radius:28px 28px 0 0;
-  padding:20px 20px 36px;
-  width:100%;max-width:400px;
-  box-shadow:0 -8px 40px rgba(180,100,60,.15);
-  max-height:70vh;display:flex;flex-direction:column;
+  background:#fff;border-radius:20px;
+  padding:20px 20px 24px;
+  width:calc(100% - 40px);max-width:400px;
+  box-shadow:0 8px 40px rgba(61,43,31,.2);
+  max-height:75vh;display:flex;flex-direction:column;
 }
-.mailbox-handle{width:36px;height:4px;background:#EEE2D8;border-radius:2px;margin:0 auto 16px}
 .mailbox-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .mailbox-header h3{font-size:17px;font-weight:800;color:#3D2B1F}
 .mailbox-close{background:none;border:none;font-size:20px;cursor:pointer;color:#C4A08A;line-height:1}
@@ -292,7 +291,6 @@ html,body{min-height:100%;font-family:'Apple SD Gothic Neo',-apple-system,BlinkM
 <!-- 우체통 패널 -->
 <div id="mailbox-panel" onclick="closeMailboxOut(event)">
   <div class="mailbox-sheet">
-    <div class="mailbox-handle"></div>
     <div class="mailbox-header">
       <h3>📬 선물 우체통</h3>
       <button class="mailbox-close" onclick="closeMailbox()">✕</button>
@@ -427,7 +425,7 @@ function enter(){
     snap.forEach(child=>{latest=child.val();});
     renderLatestGift(latest);
   });
-  cardsRef.limitToLast(50).on("value",snap=>{
+  cardsRef.orderByChild("ts").limitToLast(100).on("value",snap=>{
     const all=[];
     snap.forEach(child=>all.unshift(child.val()));
     renderMailboxList(all);
