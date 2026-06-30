@@ -333,6 +333,7 @@ const db=firebase.database();
 
 let catRef,feedRef,cardsRef,membersRef,myMemberRef;
 let myNick="",roomId="",catName="나비";
+let sessionCards=[];
 const mySessionId=Math.random().toString(36).slice(2);
 let bubbleTimer=null,joinTs=0,lastAnimKey=null;
 
@@ -419,12 +420,17 @@ function enter(){
     }
   });
 
-  // 음악 카드: 리스너 하나로 최신 카드 + 전체 히스토리 동시 처리
-  cardsRef.orderByChild("ts").limitToLast(100).on("value",snap=>{
-    const all=[];
-    snap.forEach(child=>all.unshift(child.val()));
-    renderLatestGift(all[0]||null);
-    renderMailboxList(all);
+  // 최신 선물 카드 (메인 화면) - limitToLast(1)으로 항상 최신 1개 표시
+  cardsRef.limitToLast(1).on("value",snap=>{
+    let latest=null;
+    snap.forEach(child=>{latest=child.val();});
+    renderLatestGift(latest);
+  });
+  // 우체통 히스토리 - child_added로 새 선물마다 실시간 누적
+  sessionCards=[];
+  cardsRef.on("child_added",snap=>{
+    sessionCards.unshift(snap.val());
+    renderMailboxList(sessionCards);
   });
 
   updateResetTime();
