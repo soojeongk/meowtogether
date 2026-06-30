@@ -148,7 +148,7 @@ html,body{min-height:100%;font-family:'Apple SD Gothic Neo',-apple-system,BlinkM
 .mailbox-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .mailbox-header h3{font-size:17px;font-weight:800;color:#3D2B1F}
 .mailbox-close{background:none;border:none;font-size:20px;cursor:pointer;color:#C4A08A;line-height:1}
-.mailbox-list{overflow-y:auto;flex:1}
+.mailbox-list{overflow-y:auto;flex:1;min-height:0}
 .gift-history-item{
   display:flex;align-items:center;gap:10px;
   padding:10px 0;border-bottom:1px solid #F0E8E0;
@@ -419,15 +419,11 @@ function enter(){
     }
   });
 
-  // 음악: 최신 1개 모두에게, 히스토리는 전체
-  cardsRef.limitToLast(1).on("value",snap=>{
-    let latest=null;
-    snap.forEach(child=>{latest=child.val();});
-    renderLatestGift(latest);
-  });
+  // 음악 카드: 리스너 하나로 최신 카드 + 전체 히스토리 동시 처리
   cardsRef.orderByChild("ts").limitToLast(100).on("value",snap=>{
     const all=[];
     snap.forEach(child=>all.unshift(child.val()));
+    renderLatestGift(all[0]||null);
     renderMailboxList(all);
   });
 
